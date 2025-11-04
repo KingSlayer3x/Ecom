@@ -4,11 +4,23 @@ import { Metadata } from "next";
 import Image from "next/image";
 import CredentialsSigninForm from "./credentials-signin-form";
 import Link from "next/link";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
+
 export const metadata: Metadata = {
     title: 'Sign In',
 };
 
-const SignInPage = () => {
+const SignInPage = async (props: {
+    searchParams: Promise<{
+        callbackUrl: string
+    }>
+}) => {
+        const {callbackUrl} = await props.searchParams
+        const session = await auth();
+        if(session) {
+            return redirect(callbackUrl || '/');
+        }
     return ( <div className="w-full max-w-md mx-auto">
     <Card>
         <CardHeader className="space-y-4">
